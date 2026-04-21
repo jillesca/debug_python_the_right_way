@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug gNMI Script",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "uv run ${workspaceFolder}/get_interfaces_broken.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}
