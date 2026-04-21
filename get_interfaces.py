@@ -21,44 +21,28 @@ def get_interfaces(host: str, port: int, username: str, password: str) -> list:
     return response
 
 
-def parse_interfaces(response: list) -> list[dict]:
+def parse_interfaces(response: dict) -> list[dict]:
     """Parse gNMI response into a list of interface dictionaries."""
     interfaces = []
 
-    notifications = response.get("notification", [])
-    for notification in notifications:
-        updates = notification.get("update", [])
-        for update in updates:
-            val = update.get("val", {})
-
-            if "openconfig-interfaces:interface" in val:
-                raw_interfaces = val["openconfig-interfaces:interface"]
-            elif "interface" in val:
-                raw_interfaces = val["interface"]
-            else:
-                continue
+    for notification in response["notification"]:
+        for update in notification["update"]:
+            raw_interfaces = update["val"]["openconfig-interfaces:interface"]
 
             for intf in raw_interfaces:
-                intf_name = intf.get("name", "unknown")
-                config = intf.get("config", {})
-                state = intf.get("state", {})
-
-                admin_status = state.get(
-                    "admin-status", config.get("enabled", "N/A")
-                )
-                oper_status = state.get("oper-status", "N/A")
-                description = config.get("description", "")
-                mtu = config.get("mtu", "N/A")
-                intf_type = config.get("type", state.get("type", "N/A"))
+                intf_name = intf["name"]
+                state = intf["state"]
 
                 interfaces.append(
                     {
                         "name": intf_name,
-                        "admin_status": admin_status,
-                        "oper_status": oper_status,
-                        "description": description,
-                        "mtu": mtu,
-                        "type": intf_type,
+                        "admin_status": state["admin-status"],
+                        "oper_status": state["oper-status"],
+                        "description": intf.get("config", {}).get(
+                            "description", ""
+                        ),
+                        "mtu": intf.get("config", {}).get("mtu", "N/A"),
+                        "type": state["type"],
                     }
                 )
 

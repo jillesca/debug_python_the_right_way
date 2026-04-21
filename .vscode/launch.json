@@ -5,7 +5,8 @@
       "name": "Debug gNMI Script",
       "type": "debugpy",
       "request": "launch",
-      "program": "uv run ${workspaceFolder}/get_interfaces_broken.py",
+      "program": "get_interfaces.py",
+      "justMyCode": false,
       "console": "integratedTerminal"
     }
   ]
