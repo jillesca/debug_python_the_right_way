@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug gNMI Script",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "get_interfaces.py",
+      "justMyCode": false,
+      "console": "integratedTerminal",
+      "redirectOutput": true
+    }
+  ]
+}
