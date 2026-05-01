@@ -9,8 +9,6 @@ COPY pyproject.toml uv.lock ./
 
 RUN uv sync --locked --no-dev --no-cache
 
-COPY answer/get_interfaces.py ./
-
 # ---- runtime stage ----
 FROM python:3.10-slim-bookworm AS runtime
 
@@ -19,7 +17,7 @@ RUN useradd --create-home appuser
 WORKDIR /app
 
 COPY --from=builder /app/.venv /app/.venv
-COPY --from=builder /app/get_interfaces.py ./
+COPY answer/get_interfaces.py ./
 
 ENV PATH="/app/.venv/bin:$PATH"
 
