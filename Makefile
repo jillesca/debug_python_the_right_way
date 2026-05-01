@@ -1,18 +1,26 @@
 # Makefile for the debug_python_the_right_way project
 
-# Variables
-SCRIPT=get_interfaces.py
+IMAGE_NAME = gnmi-interfaces
+IMAGE_TAG = latest
 
-# Default target
-.PHONY: all
-all: build run
+.PHONY: install run lint test check build up
 
-# Build step: Update the project's environment using uv sync
-.PHONY: build
-build:
+install:
 	uv sync
 
-# Run step: Execute the script using uv
-.PHONY: run
 run:
-	uv run $(SCRIPT)
+	uv run --env-file .env answer/get_interfaces.py
+
+lint:
+	uv run ruff check .
+
+test:
+	uv run pytest -v
+
+check: lint test
+
+build:
+	podman build --platform=linux/amd64 -t $(IMAGE_NAME):$(IMAGE_TAG) .
+
+up:
+	podman run --rm --env-file .env $(IMAGE_NAME):$(IMAGE_TAG)
